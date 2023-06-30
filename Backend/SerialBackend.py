@@ -33,7 +33,7 @@ class SerialBackend(QObject):
         self.currentConnectedPortName = None
         self.openConnection = True
         self.device = None
-        self.baud_rate = None
+        self.baud_rate = 9600
         self.portIsAvailable = False
         self.portWasAvailable = False
         self._configurationsChanged = False
@@ -88,16 +88,25 @@ class SerialBackend(QObject):
         # portToConnect = self.get_port()
         portToConnect = self.device
         print("send thread:", portToConnect)
+        portToConnect = str(portToConnect)
         # if there is ports that are connected
-        if True:
-            self.currentConnectedSerialPort = serial.Serial(portToConnect, self.baudRate, timeout=1)
+        #if True:
+        #    self.currentConnectedSerialPort = serial.Serial(portToConnect, self.baudRate, timeout=3)
         if portToConnect:
-            self.currentConnectedSerialPort = serial.Serial(portToConnect, self.baudRate, timeout=90 / 1000)
+            #self.currentConnectedSerialPort = serial.Serial(portToConnect, self.baudRate, timeout=90 / 1000)
+            self.currentConnectedSerialPort = serial.Serial(portToConnect, self.baud_rate, timeout=3)
             self.currentConnectedPortName = portToConnect
             self._configurationsChanged = False
+            print("Done connecting")
+
 
             if not self.currentConnectedSerialPort.is_open:
                 self.currentConnectedSerialPort.open()
+
+        if self.currentConnectedSerialPort.is_open:
+            print("\n   Port Open Success")
+
+
         else:
             pass
 
@@ -108,6 +117,7 @@ class SerialBackend(QObject):
                 self.Sent_MSGs = 0
             if self.Sent_MSGs < 3:
                 try:
+                    print("Sent :" + command)
                     if self.currentConnectedSerialPort:
                         self.currentConnectedSerialPort.write(str(command + "\n").encode())
                         print("Sent :" + command)
