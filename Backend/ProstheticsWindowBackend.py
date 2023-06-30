@@ -51,6 +51,8 @@ class ProstheticsBackend(QtWidgets.QMainWindow):
         self.ui.predictions_button.clicked.connect(self.test_dataset)
         self.ui.scan_button.clicked.connect(self.get_ports)
         self.ui.connect_button.clicked.connect(self.select_port)
+        self.ui.open_button.clicked.connect(self.grasp_command)
+        self.ui.close_button.clicked.connect(self.release_command)
 
     def test_dataset(self):
         print("in")
@@ -63,10 +65,12 @@ class ProstheticsBackend(QtWidgets.QMainWindow):
         if index == 0:
             self.ui.arm_state.setText("Grasp")
             self.command_signal.emit('G')
+            print('grasp')
 
         else:
             self.ui.arm_state.setText("Release")
             self.command_signal.emit('R')
+            print('release')
 
     def create_model(self):
         time_steps = 1000
@@ -146,3 +150,11 @@ class ProstheticsBackend(QtWidgets.QMainWindow):
     def select_port(self):
         self.port_signal.emit(self.ui.ports_comboBox.currentText())
         print(self.ui.ports_comboBox.currentText())
+
+    def grasp_command(self):
+        self.command_signal.emit('G')
+        print('grasp')
+
+    def release_command(self):
+        self.command_signal.emit('R')
+        print('release')
